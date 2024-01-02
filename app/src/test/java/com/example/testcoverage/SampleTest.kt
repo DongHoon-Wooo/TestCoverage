@@ -4,6 +4,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * Test for [Sample]
+ */
 class SampleTest {
     private lateinit var sample: Sample
 
@@ -31,5 +34,15 @@ class SampleTest {
     @Test
     fun testDivide() {
         assertEquals(2, sample.divide(4, 2))
+    }
+
+    @Test
+    fun testAll() {
+        assertEquals(4, sample.add(2, 2))
+        assertEquals(-4, sample.add(-2, -2))
+        assertEquals(1, sample.subtract(3, 2))
+        assertEquals(6, sample.multiply(3, 2))
+        assertEquals(2, sample.divide(4, 2))
+        assertEquals(1, sample.remainder(5, 2))
     }
 }

@@ -1,6 +1,54 @@
+import org.gradle.internal.impldep.bsh.commands.dir
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    jacoco
+}
+
+jacoco {
+    toolVersion = libs.versions.jacoco.get()
+}
+
+tasks.register("jacocoTestReport", JacocoReport::class) {
+    dependsOn("testDebugUnitTest")
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+
+    val fileFilter = arrayOf(
+        // resources
+        "**/R.class",
+        "**/BR.class",
+        "**/R$*.class",
+        "**/Manifest*.*",
+        // BuildConfig plugin
+        "**/BuildConfig.*",
+        // FeatureFlag plugin
+        "**/FeatureFlag*.*",
+        // viewbinding
+        "**/*Binding.*",
+        "**/*BindingImpl.*",
+        // aosp
+        "android/**/*.*",
+        "androidx/**/*.*",
+        // tests
+        "**/*Test*.*",
+    )
+
+    val javaClassesTree = fileTree("${layout.buildDirectory.get()}/intermediates/javac/debug/classes")
+    val kotlinClassesTree = fileTree("${layout.buildDirectory.get()}/tmp/kotlin-classes/debug") {
+        exclude(*fileFilter)
+    }
+    val mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(listOf(javaClassesTree, kotlinClassesTree)))
+    executionData.setFrom(files("${layout.buildDirectory.get()}/jacoco/testDebugUnitTest.exec"))
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }
 
 android {

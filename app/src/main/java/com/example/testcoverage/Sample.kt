@@ -15,7 +15,9 @@ class Sample {
     }
 
     fun divide(a: Int, b: Int): Int {
-        if (b == 0) throw IllegalArgumentException("Divisor cannot be 0")
+        if (b == 0)  {
+            throw IllegalArgumentException("Divisor cannot be 0")
+        }
         return a / b
     }
 
